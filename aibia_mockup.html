@@ -23,6 +23,8 @@ nav a:hover{color:#111}
 .btn-nav{background:#111;color:#fff!important;padding:7px 16px;border-radius:6px;font-size:13px;font-weight:600;text-decoration:none}
 .btn-nav:hover{background:#333!important}
 button.btn-nav{border:none;cursor:pointer;font-family:inherit}
+.btn-nav-ghost{background:transparent;color:#111;border:1.5px solid #ddd;padding:7px 16px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:border-color .15s,background .15s}
+.btn-nav-ghost:hover{border-color:#111;background:#f5f5f5}
 
 main{margin-top:58px}
 
@@ -212,6 +214,7 @@ footer a:hover{color:#aaa}
     <a href="#coverage">Coverage</a>
     <a href="#projects">Open Source</a>
     <a href="#contact">Contact</a>
+    <button class="btn-nav-ghost" onclick="openWaitlist()">Join Waitlist</button>
     <button class="btn-nav" onclick="openClerkSignIn()">Sign In</button>
   </nav>
 </header>
@@ -1113,6 +1116,12 @@ async function openClerkSignIn() {
   if (!window.Clerk) { window.location.href = '/login'; return; }
   await window.Clerk.load();
   if (window.Clerk.user) { window.location.href = '/dashboard'; return; }
+  // Watch for modal render and hide sign-up footer
+  const obs = new MutationObserver(() => {
+    document.querySelectorAll('.cl-footer').forEach(el => { el.style.display = 'none'; });
+  });
+  obs.observe(document.body, { childList: true, subtree: true });
+  setTimeout(() => obs.disconnect(), 8000);
   window.Clerk.openSignIn({
     afterSignInUrl: '/dashboard',
     afterSignUpUrl: '/dashboard',
@@ -1126,34 +1135,12 @@ async function openClerkSignIn() {
         borderRadius: '8px',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif',
         fontSize: '15px',
-      },
-      elements: {
-        card: 'box-shadow:0 8px 32px rgba(0,0,0,0.12);border:1px solid #e8e8e8;border-radius:14px;padding:32px',
-        headerTitle: 'font-size:22px;font-weight:800;letter-spacing:-0.5px',
-        headerSubtitle: 'font-size:14px;color:#666',
-        formButtonPrimary: 'background-color:#111111;font-weight:700;letter-spacing:0.3px',
-        formButtonPrimary__hover: 'background-color:#333333',
-        footerActionLink: 'color:#111111;font-weight:600',
-        identityPreviewEditButton: 'color:#111111',
-        formFieldInput: 'border-color:#e0e0e0;border-radius:7px',
-        formFieldInput__focus: 'border-color:#111111;box-shadow:0 0 0 2px rgba(17,17,17,0.15)',
       }
     }
   });
 }
 </script>
 
-    <div id="clerk-signin-mount">
-      <div id="clerk-loading" class="clerk-loading">Loading…</div>
-    </div>
-    <div class="waitlist-divider"><span>No account yet? Join the waitlist</span></div>
-    <form class="waitlist-form" id="waitlist-form" onsubmit="submitWaitlist(event)">
-      <input type="email" placeholder="your@email.com" required id="waitlist-email">
-      <button type="submit">Join Waitlist</button>
-    </form>
-    <div class="waitlist-success" id="waitlist-success">✓ You're on the list! We'll be in touch.</div>
-  </div>
-</div>
 
 </body>
 </html>
