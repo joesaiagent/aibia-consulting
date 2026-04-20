@@ -9,21 +9,29 @@
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#fff;color:#111;line-height:1.6;overflow-x:hidden}
 
 /* CLERK MODAL */
-.clerk-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:2000;align-items:center;justify-content:center;padding:20px}
+.clerk-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:2000;align-items:center;justify-content:center;padding:20px}
 .clerk-overlay.open{display:flex}
-.clerk-box{background:#fff;border-radius:16px;padding:36px 36px 28px;max-width:420px;width:100%;position:relative;overflow:hidden}
-.clerk-box-close{position:absolute;top:14px;right:16px;font-size:18px;cursor:pointer;color:#bbb;background:none;border:none;line-height:1;z-index:1}
-.clerk-box-close:hover{color:#111}
-#clerk-signin-mount .cl-rootBox{box-shadow:none!important}
-.waitlist-divider{display:flex;align-items:center;gap:12px;margin:20px 0 16px}
-.waitlist-divider::before,.waitlist-divider::after{content:'';flex:1;height:1px;background:#eee}
-.waitlist-divider span{font-size:12px;color:#bbb;white-space:nowrap}
+.clerk-box{background:#fff;border-radius:20px;padding:40px 40px 32px;max-width:460px;width:100%;position:relative}
+.clerk-box-close{position:absolute;top:16px;right:18px;font-size:18px;cursor:pointer;color:#ccc;background:none;border:none;line-height:1}
+.clerk-box-close:hover{color:#555}
+.clerk-brand{text-align:center;margin-bottom:24px}
+.clerk-brand strong{font-size:22px;font-weight:800;letter-spacing:-0.5px;color:#111}
+.clerk-brand span{display:block;font-size:12px;color:#999;margin-top:3px}
+#clerk-signin-mount{width:100%}
+#clerk-signin-mount>div,#clerk-signin-mount .cl-rootBox{width:100%!important;box-shadow:none!important}
+#clerk-signin-mount .cl-card{box-shadow:none!important;padding:0!important;margin:0 auto}
+#clerk-signin-mount .cl-formFieldInput{width:100%!important}
+#clerk-signin-mount .cl-formButtonPrimary{width:100%!important}
+.clerk-loading{text-align:center;padding:40px 0;color:#bbb;font-size:14px}
+.waitlist-divider{display:flex;align-items:center;gap:12px;margin:24px 0 16px}
+.waitlist-divider::before,.waitlist-divider::after{content:'';flex:1;height:1px;background:#ececec}
+.waitlist-divider span{font-size:12px;color:#bbb;white-space:nowrap;padding:0 4px}
 .waitlist-form{display:flex;gap:8px}
-.waitlist-form input{flex:1;padding:10px 14px;border:1px solid #e0e0e0;border-radius:8px;font-size:13px;outline:none;font-family:inherit}
+.waitlist-form input{flex:1;padding:11px 14px;border:1px solid #e0e0e0;border-radius:8px;font-size:13px;outline:none;font-family:inherit;color:#111}
 .waitlist-form input:focus{border-color:#111}
-.waitlist-form button{background:#111;color:#fff;border:none;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit}
+.waitlist-form button{background:#111;color:#fff;border:none;padding:11px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit}
 .waitlist-form button:hover{background:#333}
-.waitlist-success{color:#2a7a2a;font-size:13px;font-weight:600;margin-top:10px;display:none;text-align:center}
+.waitlist-success{color:#2a7a2a;font-size:13px;font-weight:600;margin-top:12px;display:none;text-align:center}
 
 /* NAV */
 header{position:fixed;top:0;left:0;right:0;height:58px;background:#fff;border-bottom:1px solid #e8e8e8;display:flex;align-items:center;padding:0 28px;z-index:100;gap:16px}
@@ -1127,8 +1135,14 @@ document.addEventListener('keydown',function(e){
 <div class="clerk-overlay" id="clerk-overlay">
   <div class="clerk-box">
     <button class="clerk-box-close" onclick="closeSignIn()">✕</button>
-    <div id="clerk-signin-mount"></div>
-    <div class="waitlist-divider"><span>No account? Join the waitlist</span></div>
+    <div class="clerk-brand">
+      <strong>aibia</strong>
+      <span>AI Business Intelligence Agents</span>
+    </div>
+    <div id="clerk-signin-mount">
+      <div id="clerk-loading" class="clerk-loading">Loading…</div>
+    </div>
+    <div class="waitlist-divider"><span>No account yet? Join the waitlist</span></div>
     <form class="waitlist-form" id="waitlist-form" onsubmit="submitWaitlist(event)">
       <input type="email" placeholder="your@email.com" required id="waitlist-email">
       <button type="submit">Join Waitlist</button>
@@ -1177,8 +1191,9 @@ document.addEventListener('keydown',function(e){
     document.getElementById('clerk-overlay').classList.add('open');
     document.body.style.overflow = 'hidden';
     if (clerkLoaded) {
+      var loading = document.getElementById('clerk-loading');
+      if (loading) loading.remove();
       var mount = document.getElementById('clerk-signin-mount');
-      mount.innerHTML = '';
       window.Clerk.mountSignIn(mount);
     }
   }
