@@ -22,6 +22,7 @@ nav a{text-decoration:none;color:#555;font-size:14px;font-weight:500;transition:
 nav a:hover{color:#111}
 .btn-nav{background:#111;color:#fff!important;padding:7px 16px;border-radius:6px;font-size:13px;font-weight:600;text-decoration:none}
 .btn-nav:hover{background:#333!important}
+button.btn-nav{border:none;cursor:pointer;font-family:inherit}
 
 main{margin-top:58px}
 
@@ -195,6 +196,7 @@ footer a:hover{color:#aaa}
   nav{gap:12px}
 }
 </style>
+<script async crossorigin="anonymous" data-clerk-publishable-key="pk_live_Y2xlcmsuYWliaWEuaW8k" src="https://clerk.aibia.io/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" type="text/javascript"></script>
 </head>
 <body>
 
@@ -210,7 +212,7 @@ footer a:hover{color:#aaa}
     <a href="#coverage">Coverage</a>
     <a href="#projects">Open Source</a>
     <a href="#contact">Contact</a>
-    <a href="https://aibia.io/login" class="btn-nav">Sign In</a>
+    <button class="btn-nav" onclick="openClerkSignIn()">Sign In</button>
   </nav>
 </header>
 
@@ -586,7 +588,7 @@ SOFTWARE.</pre>
     <a href="mailto:info@aibia.io">info@aibia.io</a>
     <a href="#" onclick="openModal('terms-modal');return false;">Terms</a>
     <a href="#" onclick="openModal('privacy-modal');return false;">Privacy</a>
-    <a href="https://aibia.io/login" target="_blank">Internal Login</a>
+    <a href="#" onclick="openClerkSignIn();return false;">Dashboard Login</a>
   </div>
   <div style="margin-top:12px;font-size:12px;color:#444">© 2026 aibia. All rights reserved.</div>
 </footer>
@@ -1106,6 +1108,39 @@ document.querySelectorAll('.modal-overlay').forEach(function(el){
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(function(el){closeModal(el.id);});
 });
+
+async function openClerkSignIn() {
+  if (!window.Clerk) { window.location.href = '/login'; return; }
+  await window.Clerk.load();
+  if (window.Clerk.user) { window.location.href = '/dashboard'; return; }
+  window.Clerk.openSignIn({
+    afterSignInUrl: '/dashboard',
+    afterSignUpUrl: '/dashboard',
+    appearance: {
+      variables: {
+        colorPrimary: '#111111',
+        colorBackground: '#ffffff',
+        colorText: '#111111',
+        colorInputBackground: '#f8f8f8',
+        colorInputText: '#111111',
+        borderRadius: '8px',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif',
+        fontSize: '15px',
+      },
+      elements: {
+        card: 'box-shadow:0 8px 32px rgba(0,0,0,0.12);border:1px solid #e8e8e8;border-radius:14px;padding:32px',
+        headerTitle: 'font-size:22px;font-weight:800;letter-spacing:-0.5px',
+        headerSubtitle: 'font-size:14px;color:#666',
+        formButtonPrimary: 'background-color:#111111;font-weight:700;letter-spacing:0.3px',
+        formButtonPrimary__hover: 'background-color:#333333',
+        footerActionLink: 'color:#111111;font-weight:600',
+        identityPreviewEditButton: 'color:#111111',
+        formFieldInput: 'border-color:#e0e0e0;border-radius:7px',
+        formFieldInput__focus: 'border-color:#111111;box-shadow:0 0 0 2px rgba(17,17,17,0.15)',
+      }
+    }
+  });
+}
 </script>
 
     <div id="clerk-signin-mount">
