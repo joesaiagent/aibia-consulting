@@ -6,23 +6,24 @@
 <title>aibia — AI Business Intelligence Agents</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#fff;color:#111;line-height:1.6}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#fff;color:#111;line-height:1.6;overflow-x:hidden}
 
 /* CLERK MODAL */
-.clerk-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2000;align-items:center;justify-content:center}
+.clerk-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:2000;align-items:center;justify-content:center;padding:20px}
 .clerk-overlay.open{display:flex}
-.clerk-box{background:#fff;border-radius:16px;padding:40px;max-width:480px;width:90%;position:relative;max-height:90vh;overflow-y:auto}
-.clerk-box-close{position:absolute;top:14px;right:18px;font-size:20px;cursor:pointer;color:#aaa;background:none;border:none}
+.clerk-box{background:#fff;border-radius:16px;padding:36px 36px 28px;max-width:420px;width:100%;position:relative;overflow:hidden}
+.clerk-box-close{position:absolute;top:14px;right:16px;font-size:18px;cursor:pointer;color:#bbb;background:none;border:none;line-height:1;z-index:1}
 .clerk-box-close:hover{color:#111}
-#clerk-signin-mount{min-height:300px}
-.waitlist-box{text-align:center;padding:10px 0 0}
-.waitlist-box p{font-size:13px;color:#888;margin-bottom:12px}
-.waitlist-form{display:flex;gap:8px;margin-top:8px}
-.waitlist-form input{flex:1;padding:10px 14px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;outline:none}
+#clerk-signin-mount .cl-rootBox{box-shadow:none!important}
+.waitlist-divider{display:flex;align-items:center;gap:12px;margin:20px 0 16px}
+.waitlist-divider::before,.waitlist-divider::after{content:'';flex:1;height:1px;background:#eee}
+.waitlist-divider span{font-size:12px;color:#bbb;white-space:nowrap}
+.waitlist-form{display:flex;gap:8px}
+.waitlist-form input{flex:1;padding:10px 14px;border:1px solid #e0e0e0;border-radius:8px;font-size:13px;outline:none;font-family:inherit}
 .waitlist-form input:focus{border-color:#111}
-.waitlist-form button{background:#111;color:#fff;border:none;padding:10px 18px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap}
+.waitlist-form button{background:#111;color:#fff;border:none;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit}
 .waitlist-form button:hover{background:#333}
-.waitlist-success{color:#2a7a2a;font-size:14px;font-weight:600;margin-top:10px;display:none}
+.waitlist-success{color:#2a7a2a;font-size:13px;font-weight:600;margin-top:10px;display:none;text-align:center}
 
 /* NAV */
 header{position:fixed;top:0;left:0;right:0;height:58px;background:#fff;border-bottom:1px solid #e8e8e8;display:flex;align-items:center;padding:0 28px;z-index:100;gap:16px}
@@ -224,7 +225,7 @@ footer a:hover{color:#aaa}
     <a href="#coverage">Coverage</a>
     <a href="#projects">Open Source</a>
     <a href="#contact">Contact</a>
-    <button onclick="openSignIn()" class="btn-nav" style="cursor:pointer;border:none;">Sign In</button>
+    <button onclick="openSignIn()" class="btn-nav" style="cursor:pointer;border:none;font-family:inherit;letter-spacing:-0.2px;line-height:1;">Sign In</button>
   </nav>
 </header>
 
@@ -1127,14 +1128,12 @@ document.addEventListener('keydown',function(e){
   <div class="clerk-box">
     <button class="clerk-box-close" onclick="closeSignIn()">✕</button>
     <div id="clerk-signin-mount"></div>
-    <div class="waitlist-box">
-      <p>Don't have an account? Join the waitlist.</p>
-      <form class="waitlist-form" id="waitlist-form" onsubmit="submitWaitlist(event)">
-        <input type="email" placeholder="your@email.com" required id="waitlist-email">
-        <button type="submit">Join Waitlist</button>
-      </form>
-      <div class="waitlist-success" id="waitlist-success">✓ You're on the list! We'll be in touch.</div>
-    </div>
+    <div class="waitlist-divider"><span>No account? Join the waitlist</span></div>
+    <form class="waitlist-form" id="waitlist-form" onsubmit="submitWaitlist(event)">
+      <input type="email" placeholder="your@email.com" required id="waitlist-email">
+      <button type="submit">Join Waitlist</button>
+    </form>
+    <div class="waitlist-success" id="waitlist-success">✓ You're on the list! We'll be in touch.</div>
   </div>
 </div>
 
@@ -1147,7 +1146,29 @@ document.addEventListener('keydown',function(e){
   clerkScript.async = true;
   clerkScript.crossOrigin = 'anonymous';
   clerkScript.onload = async function() {
-    await window.Clerk.load({ afterSignInUrl: 'https://aibia.io', afterSignUpUrl: 'https://aibia.io' });
+    await window.Clerk.load({
+      afterSignInUrl: 'https://aibia.io',
+      afterSignUpUrl: 'https://aibia.io',
+      appearance: {
+        variables: {
+          colorPrimary: '#111111',
+          colorText: '#111111',
+          colorBackground: '#ffffff',
+          colorInputBackground: '#ffffff',
+          colorInputText: '#111111',
+          borderRadius: '8px',
+          fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif'
+        },
+        elements: {
+          card: 'box-shadow:none;padding:0',
+          headerTitle: 'font-size:22px;font-weight:800;letter-spacing:-0.5px',
+          headerSubtitle: 'color:#666',
+          formButtonPrimary: 'background:#111;border-radius:8px;font-weight:700;font-size:14px',
+          footerActionLink: 'color:#111;font-weight:600',
+          identityPreviewEditButton: 'color:#111'
+        }
+      }
+    });
     clerkLoaded = true;
   };
   document.head.appendChild(clerkScript);
