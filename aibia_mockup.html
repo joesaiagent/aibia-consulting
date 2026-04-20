@@ -8,30 +8,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#fff;color:#111;line-height:1.6;overflow-x:hidden}
 
-/* CLERK MODAL */
-.clerk-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:2000;align-items:center;justify-content:center;padding:20px}
-.clerk-overlay.open{display:flex}
-.clerk-box{background:#fff;border-radius:20px;padding:40px 40px 32px;max-width:460px;width:100%;position:relative}
-.clerk-box-close{position:absolute;top:16px;right:18px;font-size:18px;cursor:pointer;color:#ccc;background:none;border:none;line-height:1}
-.clerk-box-close:hover{color:#555}
-.clerk-brand{text-align:center;margin-bottom:24px}
-.clerk-brand strong{font-size:22px;font-weight:800;letter-spacing:-0.5px;color:#111}
-.clerk-brand span{display:block;font-size:12px;color:#999;margin-top:3px}
-#clerk-signin-mount{width:100%}
-#clerk-signin-mount>div,#clerk-signin-mount .cl-rootBox{width:100%!important;box-shadow:none!important}
-#clerk-signin-mount .cl-card{box-shadow:none!important;padding:0!important;margin:0 auto}
-#clerk-signin-mount .cl-formFieldInput{width:100%!important}
-#clerk-signin-mount .cl-formButtonPrimary{width:100%!important}
-.clerk-loading{text-align:center;padding:40px 0;color:#bbb;font-size:14px}
-.waitlist-divider{display:flex;align-items:center;gap:12px;margin:24px 0 16px}
-.waitlist-divider::before,.waitlist-divider::after{content:'';flex:1;height:1px;background:#ececec}
-.waitlist-divider span{font-size:12px;color:#bbb;white-space:nowrap;padding:0 4px}
-.waitlist-form{display:flex;gap:8px}
-.waitlist-form input{flex:1;padding:11px 14px;border:1px solid #e0e0e0;border-radius:8px;font-size:13px;outline:none;font-family:inherit;color:#111}
-.waitlist-form input:focus{border-color:#111}
-.waitlist-form button{background:#111;color:#fff;border:none;padding:11px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit}
-.waitlist-form button:hover{background:#333}
-.waitlist-success{color:#2a7a2a;font-size:13px;font-weight:600;margin-top:12px;display:none;text-align:center}
+
 
 /* NAV */
 header{position:fixed;top:0;left:0;right:0;height:58px;background:#fff;border-bottom:1px solid #e8e8e8;display:flex;align-items:center;padding:0 28px;z-index:100;gap:16px}
@@ -233,7 +210,7 @@ footer a:hover{color:#aaa}
     <a href="#coverage">Coverage</a>
     <a href="#projects">Open Source</a>
     <a href="#contact">Contact</a>
-    <button onclick="openSignIn()" class="btn-nav" style="cursor:pointer;border:none;font-family:inherit;letter-spacing:-0.2px;line-height:1;">Sign In</button>
+    <a href="https://aibia.io/login" class="btn-nav">Sign In</a>
   </nav>
 </header>
 
@@ -1131,14 +1108,6 @@ document.addEventListener('keydown',function(e){
 });
 </script>
 
-<!-- SIGN IN MODAL -->
-<div class="clerk-overlay" id="clerk-overlay">
-  <div class="clerk-box">
-    <button class="clerk-box-close" onclick="closeSignIn()">✕</button>
-    <div class="clerk-brand">
-      <strong>aibia</strong>
-      <span>AI Business Intelligence Agents</span>
-    </div>
     <div id="clerk-signin-mount">
       <div id="clerk-loading" class="clerk-loading">Loading…</div>
     </div>
@@ -1151,72 +1120,5 @@ document.addEventListener('keydown',function(e){
   </div>
 </div>
 
-<script>
-  // Load Clerk
-  var clerkLoaded = false;
-  var clerkScript = document.createElement('script');
-  clerkScript.setAttribute('data-clerk-publishable-key','pk_live_Y2xlcmsuYWliaWEuaW8k');
-  clerkScript.src = 'https://clerk.aibia.io/npm/@clerk/clerk-js@latest/dist/clerk.browser.js';
-  clerkScript.async = true;
-  clerkScript.crossOrigin = 'anonymous';
-  clerkScript.onload = async function() {
-    await window.Clerk.load({
-      afterSignInUrl: 'https://aibia.io',
-      afterSignUpUrl: 'https://aibia.io',
-      appearance: {
-        variables: {
-          colorPrimary: '#111111',
-          colorText: '#111111',
-          colorBackground: '#ffffff',
-          colorInputBackground: '#ffffff',
-          colorInputText: '#111111',
-          borderRadius: '8px',
-          fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif'
-        },
-        elements: {
-          card: 'box-shadow:none;padding:0',
-          headerTitle: 'font-size:22px;font-weight:800;letter-spacing:-0.5px',
-          headerSubtitle: 'color:#666',
-          formButtonPrimary: 'background:#111;border-radius:8px;font-weight:700;font-size:14px',
-          footerActionLink: 'color:#111;font-weight:600',
-          identityPreviewEditButton: 'color:#111'
-        }
-      }
-    });
-    clerkLoaded = true;
-  };
-  document.head.appendChild(clerkScript);
-
-  function openSignIn() {
-    document.getElementById('clerk-overlay').classList.add('open');
-    document.body.style.overflow = 'hidden';
-    if (clerkLoaded) {
-      var loading = document.getElementById('clerk-loading');
-      if (loading) loading.remove();
-      var mount = document.getElementById('clerk-signin-mount');
-      window.Clerk.mountSignIn(mount);
-    }
-  }
-  function closeSignIn() {
-    document.getElementById('clerk-overlay').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-  document.getElementById('clerk-overlay').addEventListener('click', function(e) {
-    if (e.target === this) closeSignIn();
-  });
-
-  function submitWaitlist(e) {
-    e.preventDefault();
-    var email = document.getElementById('waitlist-email').value;
-    fetch('https://formsubmit.co/ajax/joesaiagent@gmail.com', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json','Accept':'application/json'},
-      body: JSON.stringify({ email: email, _subject: 'aibia Waitlist Signup', message: 'Waitlist: ' + email })
-    }).then(function() {
-      document.getElementById('waitlist-form').style.display = 'none';
-      document.getElementById('waitlist-success').style.display = 'block';
-    });
-  }
-</script>
 </body>
 </html>
